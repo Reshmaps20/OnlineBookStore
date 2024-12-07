@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import "./login.css";
+
 const Login = () => {
 
 const [isRegister, setIsRegister] = useState(false);
@@ -14,17 +16,17 @@ const handleChange = (e) => {
  setFormData({ ...formData, [e.target.name]: e.target.value });
 };
 
-const handleLogin = (e) => {
-  };
-
 const handleNewUser = (e) => {
-    setIsRegister(!isRegister);
-    setFormData({ username: "", password: "", firstName: "", lastName: "", confirmPassword: "" });
+    setIsRegister(true);
+    formReset();
   };
+ const formReset = () => {
+  setFormData({ username: "", password: "", firstName: "", lastName: "", confirmPassword: "" });
+}
 
-const handleRegister = (e) => {
-  };
-
+const isAnyFieldEmptyForRegistration = () => {
+    return  !formData.username || !formData.password || !formData.firstName || !formData.lastName
+}
 
  return (
     <div className="login-container">
@@ -58,7 +60,7 @@ const handleRegister = (e) => {
             </>
          )}
         <button className="form-button" data-testid="login-id"
-          onClick={isRegister ? handleRegister : handleLogin} >
+          disabled={isAnyFieldEmptyForRegistration()}>
             {isRegister ? "Register" : "Login"}
         </button>
         <button className={`form-button ${isRegister ? 'already-user' : ''}`} data-testid="register-id"

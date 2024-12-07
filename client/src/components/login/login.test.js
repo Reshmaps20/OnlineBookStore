@@ -48,3 +48,27 @@ test('Displays Username and password fields', () => {
         const newUserButton = screen.getByTestId('register-id');
         expect(newUserButton).toBeInTheDocument();
   });
+
+
+test("Register button should be enabled only after filling all the fields", () => {
+
+     render(<Login />);
+        const newUserButton = screen.getByRole('button', { name: /New User/i });
+        fireEvent.click(newUserButton);
+        const registerButton = screen.getByRole('button', { name: /Register/i });
+        expect(registerButton).toBeDisabled();
+
+        const userNameInput = screen.getByPlaceholderText('Username');
+        const firstNameInput = screen.getByPlaceholderText('First Name');
+        const lastNameInput = screen.getByPlaceholderText('Last Name');
+        const passwordInput = screen.getByPlaceholderText('Password');
+        const confirmPasswordInput = screen.getByPlaceholderText('Confirm Password');
+
+        fireEvent.change(userNameInput, { target: { value: 'testUser' } });
+        fireEvent.change(firstNameInput, { target: { value: 'John' } });
+        fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
+        fireEvent.change(passwordInput, { target: { value: 'password123' } });
+        fireEvent.change(confirmPasswordInput, { target: { value: 'password123' } });
+
+        expect(registerButton).toBeEnabled();
+  });
