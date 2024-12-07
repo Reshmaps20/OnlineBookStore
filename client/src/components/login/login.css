@@ -59,3 +59,10 @@ input {
   background-color: #64bad6;
   color: white;
 }
+
+.password-validation-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}

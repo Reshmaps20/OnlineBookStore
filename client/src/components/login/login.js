@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { FaCheck, FaTimes} from 'react-icons/fa';
 import "./login.css";
 
 const Login = () => {
 
 const [isRegister, setIsRegister] = useState(false);
+const [hasTypedConfirmPassword, setHasTypedConfirmPassword] = useState(false);
+const [isPasswordMatch, setIsPasswordMatch] = useState(false);
 const [formData, setFormData] = useState({
     username: "",
     firstName: "",
@@ -14,6 +17,10 @@ const [formData, setFormData] = useState({
 
 const handleChange = (e) => {
  setFormData({ ...formData, [e.target.name]: e.target.value });
+ if (e.target.name === "confirmPassword") {
+     setHasTypedConfirmPassword(true);
+     setIsPasswordMatch(formData.password === e.target.value);
+  }
 };
 
 const handleNewUser = (e) => {
@@ -25,7 +32,7 @@ const handleNewUser = (e) => {
 }
 
 const isAnyFieldEmptyForRegistration = () => {
-    return  !formData.username || !formData.password || !formData.firstName || !formData.lastName
+    return  !formData.username || !formData.password || !formData.firstName || !formData.lastName || formData.password !== formData.confirmPassword
 }
 
  return (
@@ -56,6 +63,13 @@ const isAnyFieldEmptyForRegistration = () => {
             <div className="form-group confirm-password-container">
                 <input type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword}
                           onChange={handleChange}/>
+                {hasTypedConfirmPassword && (
+                    <div className="password-validation-icon">
+                        {isPasswordMatch ? ( <FaCheck style={{ color: "green" }} />
+                            ) : (<FaTimes style={{ color: "red" }} />
+                        )}
+                    </div>
+                )}
             </div>
             </>
          )}
