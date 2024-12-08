@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {EMPTY_FORM_DATA,LOGIN,USERNAME,PASSWORD,REGISTER,FIRST_NAME,LAST_NAME,CONFIRM_PASSWORD,ALREADY_A_USER,NEW_USER} from "../../utils/constants";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./index.css";
 
 const Login = () => {
@@ -47,6 +48,43 @@ const handleRegister = async () => {
        }
   };
 
+const handleLogin = async () => {
+    console.log("Attempting login with username:", formData.username);
+    try {
+      const response = await axios.post("http://localhost:8080/api/login", {
+        username: formData.username,
+        password: formData.password,
+      });
+
+      const responseData = response.data;
+      console.log("Login response:", response);
+
+      if (responseData.validResponse) {
+        setSuccessMessage(responseData.message);
+        setErrorMessage("");
+
+        navigate("/books", {
+          state: {
+            username: formData.username,
+            password: formData.password,
+          },
+        });
+      } else {
+        setSuccessMessage("");
+        setErrorMessage(responseData.message);
+      }
+    } catch (error) {
+      console.log("error:", error.response);
+      if (error.response) {
+        const errorMessage = error.response.data.message;
+        console.log("Backend error message:", errorMessage);
+        setErrorMessage(errorMessage);
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again later.");
+      }
+      setSuccessMessage("");
+    }
+  };
  return (
     <div className="login-container">
       <div className="login-form">
@@ -70,7 +108,7 @@ const handleRegister = async () => {
                 <input type="password" name="confirmPassword" placeholder={CONFIRM_PASSWORD} value={formData.confirmPassword}
                           onChange={updateFormData}/>
          )}
-        <button className="form-button" data-testid="login-id" onClick={handleRegister} >
+        <button className="form-button" data-testid="login-id" onClick={isNewUser ? handleRegister : handleLogin}>
             {isNewUser ? REGISTER : LOGIN}
         </button>
         <button className={"form-button already-user"} data-testid="toggle-user-type"
