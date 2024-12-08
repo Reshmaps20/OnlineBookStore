@@ -10,7 +10,7 @@ const [isNewUser, setIsNewUser] = useState(false);
 const [successMessage, setSuccessMessage] = useState("");
 const [errorMessage, setErrorMessage] = useState("");
 
-
+const navigate = useNavigate();
 const updateFormData = (e) => {
  setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -30,7 +30,7 @@ const handleSuccess = (message) => {
     setSuccessMessage("");
     const errorMessage =
       error?.response?.data?.message || "An unexpected error occurred. Please try again later.";
-    setErrorMessage(errorMessage);
+       setErrorMessage(errorMessage);
   };
 
 const handleRegister = async () => {
@@ -57,7 +57,7 @@ const handleLogin = async () => {
       });
 
       const responseData = response.data;
-      console.log("Login response:", response);
+      console.log("Login response:", response.data);
 
       if (responseData.validResponse) {
         setSuccessMessage(responseData.message);
@@ -74,15 +74,7 @@ const handleLogin = async () => {
         setErrorMessage(responseData.message);
       }
     } catch (error) {
-      console.log("error:", error.response);
-      if (error.response) {
-        const errorMessage = error.response.data.message;
-        console.log("Backend error message:", errorMessage);
-        setErrorMessage(errorMessage);
-      } else {
-        setErrorMessage("An unexpected error occurred. Please try again later.");
-      }
-      setSuccessMessage("");
+      handleError(error);
     }
   };
  return (

@@ -10,4 +10,5 @@ export default {
     },
   
     setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+    //verbose:true,
   };

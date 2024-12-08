@@ -4,6 +4,7 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "./index";
+//import * as router from "react-router-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 
 
@@ -17,14 +18,18 @@ jest.mock("axios");
 
 test('Displays Login header in the Login page', () => {
 
-    render(<Login />);
+    render(<Router>
+                 <Login />
+               </Router>);
     const titleElement = screen.getByTestId('login-heading');
     expect(titleElement).toBeInTheDocument();
 })
 
 test('Displays Username and password field with Login button', () => {
 
-    render(<Login />);
+        render(<Router>
+                     <Login />
+                   </Router>);
     const inputUsername = screen.getByPlaceholderText("Username");
     fireEvent.change(inputUsername, { target: { value: "User" } });
     expect(inputUsername.value).toBe("User");
@@ -39,7 +44,9 @@ test('Displays Username and password field with Login button', () => {
 })
 
 test("Toggle between register screen and Login Screen when user clicks on New User button", () => {
-    render(<Login />);
+        render(<Router>
+                     <Login />
+                   </Router>);
       let toggleUserTypeButton = screen.getByTestId('toggle-user-type');
       let loginOrRegisterButton = screen.getByTestId('login-id');
       let firstNameField = screen.queryByPlaceholderText('First Name');
@@ -74,7 +81,9 @@ test("Successful Registration of User",  async() => {
      const mockResponse = { validResponse: true, message: "Registration successful!" };
      axios.post.mockResolvedValueOnce({ data: mockResponse });
 
-     render(<Login />);
+        render(<Router>
+                     <Login />
+                   </Router>);
 
       const toggleUserTypeButton = screen.getByTestId('toggle-user-type');
       fireEvent.click(toggleUserTypeButton);
@@ -108,7 +117,9 @@ test("Existing user tries to register again",  async() => {
     const mockResponse = { validResponse: false, message: "User already exists!" };
     axios.post.mockResolvedValueOnce({ data: mockResponse });
 
-     render(<Login />);
+         render(<Router>
+                      <Login />
+                    </Router>);
      const toggleUserTypeButton = screen.getByTestId('toggle-user-type');
      fireEvent.click(toggleUserTypeButton);
 
@@ -143,7 +154,9 @@ test("When backend exception occus",  async() => {
     const mockResponse = { validResponse: false, message: "An unexpected error occurred. Please try again later."};
     axios.post.mockRejectedValueOnce ({ data: mockResponse });
 
-     render(<Login />);
+         render(<Router>
+                      <Login />
+                    </Router>);
     const toggleUserTypeButton = screen.getByTestId('toggle-user-type');
          fireEvent.click(toggleUserTypeButton);
 
@@ -179,10 +192,19 @@ test("Successful User Login",  async() => {
      const mockResponse = { validResponse: true, message: "Login Success!" };
      axios.post.mockResolvedValueOnce({ data: mockResponse });
 
-     render(
+//     Object.defineProperty(router,"useNavigate",() => { const navigate = jest.fn()});
+//       jest.spyOn(router,"useNavigate").mockImplementation( () => navigate);
+// const mockedNavigator = jest.fn();
+//       jest.mock('react-router-dom', () => ({
+//         ...jest.requireActual('react-router-dom'),
+//         useNavigate: () => {return {
+//           navigate: mockedNavigator.mockImplementation(()=>{}),
+//         }},
+//       }));
 
-             <Login />
-         );
+         render(<Router>
+                      <Login />
+                    </Router>);
 
 
       const userNameInput = screen.getByPlaceholderText('Username');
@@ -199,6 +221,7 @@ test("Successful User Login",  async() => {
 //       expect(response).toHaveTextContent('Login successful!');
       expect(axios.post).toHaveBeenCalledTimes(1);
       expect(axios.post).toHaveBeenCalledWith("http://localhost:8080/api/login", formData);
+     // expect(mockedNavigator).toHaveBeenCalledWith("/books");
 
   });
 
@@ -207,10 +230,9 @@ test("Invalid credentials",  async() => {
      const mockResponse = { validResponse: false, message: "Invalid credentials!" };
      axios.post.mockResolvedValueOnce({ data: mockResponse });
 
-     render(
-
-             <Login />
-         );
+        render(<Router>
+                     <Login />
+                   </Router>);
 
 
       const userNameInput = screen.getByPlaceholderText('Username');
@@ -236,7 +258,9 @@ test("When backend exception occus while login",  async() => {
     const mockResponse = { validResponse: false, message: "An unexpected error occurred. Please try again later."};
     axios.post.mockRejectedValueOnce ({ data: mockResponse });
 
-     render(<Login />);
+         render(<Router>
+                      <Login />
+                    </Router>);
    const userNameInput = screen.getByPlaceholderText('Username');
           const passwordInput = screen.getByPlaceholderText('Password');
 
