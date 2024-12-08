@@ -6,6 +6,33 @@ import "./index.css";
 const BookStore = () => {
   const location = useLocation();
   const { username, password } = location.state || {};
+  const [books, setBooks] = useState([]);
+  const [error, setError] = useState(null);
+
+  const credentials = `${username}:${password}`;
+  const encodedCredentials = btoa(credentials);
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+const fetchBooks = () => {
+    setError(null);
+    console.log("credentials:",credentials);
+    axios
+      .get("http://localhost:8080/api/books", {
+        headers: {
+          Authorization: `Basic ${encodedCredentials}`,
+        },
+      })
+      .then((response) => {
+        setBooks(response.data);
+        console.log("Books retrieved:", response.data);
+      })
+      .catch((error) => {
+        setError("Error fetching books. Please try again.");
+      });
+  };
 
   return (
     <div className="bookscreen-container">
@@ -17,6 +44,17 @@ const BookStore = () => {
         <span className="username" data-testid="user-greeting">Hi,{username}</span>
               <button className="cart-btn" data-testid="cart-button"> Cart  </button>
       </div>
+      <div className="book-list">
+              {books.map((book) => (
+                <div key={book.id} className="book-item" data-testid="book-item">
+                  <h3>{book.title}</h3>
+                  <p>Author: {book.author}</p>
+                  <p>Price: €{book.price}</p>
+
+
+                </div>
+              ))}
+            </div>
     </div>
   );
 };
